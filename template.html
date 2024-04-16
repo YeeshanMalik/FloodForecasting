@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flood Forecasting System</title>
+
+    <!-- Include flatpickr scripts and styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <!-- Include MPLD3 scripts -->
+    <script src="https://mpld3.github.io/js/mpld3.v0.5.2.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #CCCFFF;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #40759c;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        p {
+            margin: 5px 0;
+        }
+
+        #mpld3-plot {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Flood Forecasting System</h1>
+
+    <form method="post" action="/" onsubmit="return checkDate()">
+        <label for="date">Select Date:</label>
+        <input type="text" id="date" name="date" class="flatpickr" required>
+        
+        <input type="hidden" id="day" name="day" required>
+        <input type="hidden" id="month" name="month" required>
+        <input type="hidden" id="year" name="year" required>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="mpld3-plot">
+        <!-- The MPLD3 animated plot will be inserted here -->
+        {{ mpld3_html|safe }}
+    </div>
+
+    <script>
+        function checkDate() {
+            var selectedDate = new Date(document.getElementById("date").value);
+            var september28 = new Date(2023, 8, 28); // Months are zero-based
+
+            if (selectedDate <= september28) {
+                // Parse the selected date and fill day, month, and year fields
+                document.getElementById("day").value = selectedDate.getDate();
+                document.getElementById("month").value = selectedDate.getMonth() + 1; // Months are zero-based
+                document.getElementById("year").value = selectedDate.getFullYear();
+                return true;
+            } else {
+                alert("Please select a date on or before September 28, 2023.");
+                return false;
+            }
+        }
+
+        flatpickr("#date", {
+            dateFormat: "Y-m-d",
+            altInput: true,
+            altFormat: "F j, Y",
+            onClose: function (selectedDates, dateStr, instance) {
+                // Parse the selected date and fill day, month, and year fields
+                const selectedDate = new Date(dateStr);
+                document.getElementById("day").value = selectedDate.getDate();
+                document.getElementById("month").value = selectedDate.getMonth() + 1; // Months are zero-based
+                document.getElementById("year").value = selectedDate.getFullYear();
+            }
+        });
+    </script>
+</body>
+</html>
